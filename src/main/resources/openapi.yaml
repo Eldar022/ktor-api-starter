@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: Ktor Tasks API
+  version: 1.0.0
+  description: Учебный REST API для демонстрации маршрутов, тестов и централизованной обработки ошибок.
+servers:
+  - url: http://localhost:8080
+paths:
+  /:
+    get:
+      summary: Информация об API
+      responses:
+        '200':
+          description: Название API и ссылки на документацию
+  /health:
+    get:
+      summary: Проверка состояния сервиса
+      responses:
+        '200':
+          description: Сервис работает
+  /tasks:
+    get:
+      summary: Получить все задачи
+      responses:
+        '200':
+          description: Список задач
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Создать задачу
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Задача создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Ошибка валидации или JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Числовой идентификатор задачи
+        schema:
+          type: integer
+    get:
+      summary: Получить задачу по ID
+      responses:
+        '200':
+          description: Задача найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Некорректный ID
+        '404':
+          description: Задача не найдена
+    delete:
+      summary: Удалить задачу по ID
+      responses:
+        '204':
+          description: Задача удалена
+        '400':
+          description: Некорректный ID
+        '404':
+          description: Задача не найдена
+components:
+  schemas:
+    Task:
+      type: object
+      required: [id, title, completed]
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Подготовить README
+        completed:
+          type: boolean
+          example: false
+    CreateTaskRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 120
+          example: Подготовить README
+    ApiError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: task_not_found
+        message:
+          type: string
+          example: Task 123 was not found
+        details:
+          type: string
+          nullable: true
