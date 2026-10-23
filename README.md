@@ -10,7 +10,7 @@
 ## Запуск
 
 ```bash
-gradle run
+.\gradlew.bat run
 ```
 
 Сервис запускается на `http://localhost:8080`.
@@ -24,7 +24,7 @@ Swagger UI загружает библиотеку с unpkg CDN, поэтому 
 ## Тестирование
 
 ```bash
-gradle test
+.\gradlew.bat test
 ```
 
 Если в проект добавлен Gradle Wrapper, используйте `./gradlew test` (Linux/macOS) или `gradlew.bat test` (Windows).
